@@ -10,4 +10,5 @@ public class Pet : BaseEntity
     public Breed Breed { get; set; }
     public int SpecieId { get; set; }
     public Specie Specie { get; set; }
+    public ICollection<Appointment> Appointments { get; set; }   
 }

@@ -22,5 +22,8 @@ public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
         .HasMaxLength(255)
         .IsRequired();
 
+        builder.HasOne(p => p.Veterinarian)
+            .WithMany(p => p.Appointments)
+            .HasForeignKey(p => p.VeterinarianId);
     }
 }

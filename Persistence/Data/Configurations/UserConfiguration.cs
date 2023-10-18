@@ -46,13 +46,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                {
                    j.ToTable("userRol");
                    j.HasKey(t => new { t.UserId, t.RolId });
-
                });
 
             builder.HasMany(p => p.RefreshTokens)
             .WithOne(p => p.User)
             .HasForeignKey(p => p.UserId);
         }
-
     }
 }

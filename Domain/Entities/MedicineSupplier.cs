@@ -1,6 +1,6 @@
 namespace Domain.Entities;
 
-public class MedicineSupplier
+public class MedicineSupplier : BaseEntity
 {
     public int MedicineId { get; set; }
     public Medicine Medicine { get; set; }

@@ -10,6 +10,6 @@ public class Medicine : BaseEntity
     public ICollection<DetailMovement> DetailMovements { get; set; }
     public ICollection<MedicalTreatments> MedicalTreatments { get; set; }
     public ICollection<MedicineMovement> MedicineMovements { get; set; }
-    public ICollection<MedicineSupplier> MedicineSuppliers { get; set; }
     public ICollection<Supplier> Suppliers { get; set; } = new HashSet<Supplier>();
+    public ICollection<MedicineSupplier> MedicineSuppliers { get; set; }
 }
