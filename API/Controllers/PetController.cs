@@ -11,13 +11,13 @@ namespace API.Controllers;
 [ApiVersion("1.0")]
 [ApiVersion("1.1")]
 
-public class VeterinarianController : ApiBaseController
+public class PetController : ApiBaseController
 {
     private readonly IUserService _userService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public VeterinarianController(IUserService userService, IUnitOfWork unitOfWork, IMapper mapper)
+    public PetController(IUserService userService, IUnitOfWork unitOfWork, IMapper mapper)
     {
         _userService = userService;
         _unitOfWork = unitOfWork;
@@ -29,10 +29,10 @@ public class VeterinarianController : ApiBaseController
     [Authorize(Roles = "Administrator, Employee")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<IEnumerable<VeterinarianDto>>> Get()
+    public async Task<ActionResult<IEnumerable<PetDto>>> Get()
     {
-        var veterinarians = await _unitOfWork.Veterinarians.GetAllAsync();
-        return _mapper.Map<List<VeterinarianDto>>(veterinarians);
+        var pet = await _unitOfWork.Pets.GetAllAsync();
+        return _mapper.Map<List<PetDto>>(pet);
     }
 
     [HttpGet]
@@ -42,36 +42,36 @@ public class VeterinarianController : ApiBaseController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<object> Get([FromQuery] Params queryParams)
     {
-        var paginatedVeterinarians = await _unitOfWork.Veterinarians.GetWithPagination(queryParams.PageIndex, queryParams.PageSize);
-        return _mapper.Map<List<VeterinarianDto>>(paginatedVeterinarians);
+        var paginated = await _unitOfWork.Pets.GetWithPagination(queryParams.PageIndex, queryParams.PageSize);
+        return _mapper.Map<List<PetDto>>(paginated);
     }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<VeterinarianDto>> Post(VeterinarianDto veterinarianDto)
+    public async Task<ActionResult<PetDto>> Post(PetDto petDto)
     {
-        var veterinarian = _mapper.Map<Veterinarian>(veterinarianDto);
-        _unitOfWork.Veterinarians.Add(veterinarian);
+        var pet = _mapper.Map<Pet>(petDto);
+        _unitOfWork.Pets.Add(pet);
         await _unitOfWork.SaveAsync();
-        if (veterinarian == null)
+        if (pet == null)
         {
             return BadRequest();
         }
-        return CreatedAtAction(nameof(Post),new {id = veterinarian.Id}, veterinarianDto);
+        return CreatedAtAction(nameof(Post),new {id = pet.Id}, petDto);
     }
 
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<VeterinarianDto>> Put(int id, [FromBody] VeterinarianDto veterinarianDto)
+    public async Task<ActionResult<PetDto>> Put(int id, [FromBody] PetDto petDto)
     {
-        if (veterinarianDto == null) return NotFound();
-        var veterinarian = _mapper.Map<Veterinarian>(veterinarianDto);
-        _unitOfWork.Veterinarians.Update(veterinarian);
+        if (petDto == null) return NotFound();
+        var pet = _mapper.Map<Pet>(petDto);
+        _unitOfWork.Pets.Update(pet);
         await _unitOfWork.SaveAsync();
-        return veterinarianDto;
+        return petDto;
     }
 
     [HttpDelete("{id}")]
@@ -79,9 +79,9 @@ public class VeterinarianController : ApiBaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
     {
-        var veterinarian = await _unitOfWork.Veterinarians.GetByIdAsync(id);
-        if (veterinarian == null) return NotFound();
-        _unitOfWork.Veterinarians.Remove(veterinarian);
+        var pet = await _unitOfWork.Pets.GetByIdAsync(id);
+        if (pet == null) return NotFound();
+        _unitOfWork.Pets.Remove(pet);
         await _unitOfWork.SaveAsync();
         return NoContent();
     }

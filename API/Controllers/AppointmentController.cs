@@ -11,13 +11,13 @@ namespace API.Controllers;
 [ApiVersion("1.0")]
 [ApiVersion("1.1")]
 
-public class VeterinarianController : ApiBaseController
+public class AppointmentController : ApiBaseController
 {
     private readonly IUserService _userService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public VeterinarianController(IUserService userService, IUnitOfWork unitOfWork, IMapper mapper)
+    public AppointmentController(IUserService userService, IUnitOfWork unitOfWork, IMapper mapper)
     {
         _userService = userService;
         _unitOfWork = unitOfWork;
@@ -29,10 +29,10 @@ public class VeterinarianController : ApiBaseController
     [Authorize(Roles = "Administrator, Employee")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<IEnumerable<VeterinarianDto>>> Get()
+    public async Task<ActionResult<IEnumerable<AppointmentDto>>> Get()
     {
-        var veterinarians = await _unitOfWork.Veterinarians.GetAllAsync();
-        return _mapper.Map<List<VeterinarianDto>>(veterinarians);
+        var appointment = await _unitOfWork.Appointments.GetAllAsync();
+        return _mapper.Map<List<AppointmentDto>>(appointment);
     }
 
     [HttpGet]
@@ -42,36 +42,36 @@ public class VeterinarianController : ApiBaseController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<object> Get([FromQuery] Params queryParams)
     {
-        var paginatedVeterinarians = await _unitOfWork.Veterinarians.GetWithPagination(queryParams.PageIndex, queryParams.PageSize);
-        return _mapper.Map<List<VeterinarianDto>>(paginatedVeterinarians);
+        var paginated = await _unitOfWork.Appointments.GetWithPagination(queryParams.PageIndex, queryParams.PageSize);
+        return _mapper.Map<List<AppointmentDto>>(paginated);
     }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<VeterinarianDto>> Post(VeterinarianDto veterinarianDto)
+    public async Task<ActionResult<AppointmentDto>> Post(AppointmentDto appointmentDto)
     {
-        var veterinarian = _mapper.Map<Veterinarian>(veterinarianDto);
-        _unitOfWork.Veterinarians.Add(veterinarian);
+        var appointment = _mapper.Map<Appointment>(appointmentDto);
+        _unitOfWork.Appointments.Add(appointment);
         await _unitOfWork.SaveAsync();
-        if (veterinarian == null)
+        if (appointment == null)
         {
             return BadRequest();
         }
-        return CreatedAtAction(nameof(Post),new {id = veterinarian.Id}, veterinarianDto);
+        return CreatedAtAction(nameof(Post),new {id = appointment.Id}, appointmentDto);
     }
 
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<VeterinarianDto>> Put(int id, [FromBody] VeterinarianDto veterinarianDto)
+    public async Task<ActionResult<AppointmentDto>> Put(int id, [FromBody] AppointmentDto appointmentDto)
     {
-        if (veterinarianDto == null) return NotFound();
-        var veterinarian = _mapper.Map<Veterinarian>(veterinarianDto);
-        _unitOfWork.Veterinarians.Update(veterinarian);
+        if (appointmentDto == null) return NotFound();
+        var appointment = _mapper.Map<Appointment>(appointmentDto);
+        _unitOfWork.Appointments.Update(appointment);
         await _unitOfWork.SaveAsync();
-        return veterinarianDto;
+        return appointmentDto;
     }
 
     [HttpDelete("{id}")]
@@ -79,9 +79,9 @@ public class VeterinarianController : ApiBaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
     {
-        var veterinarian = await _unitOfWork.Veterinarians.GetByIdAsync(id);
-        if (veterinarian == null) return NotFound();
-        _unitOfWork.Veterinarians.Remove(veterinarian);
+        var appointment = await _unitOfWork.Appointments.GetByIdAsync(id);
+        if (appointment == null) return NotFound();
+        _unitOfWork.Appointments.Remove(appointment);
         await _unitOfWork.SaveAsync();
         return NoContent();
     }

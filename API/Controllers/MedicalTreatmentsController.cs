@@ -11,13 +11,13 @@ namespace API.Controllers;
 [ApiVersion("1.0")]
 [ApiVersion("1.1")]
 
-public class VeterinarianController : ApiBaseController
+public class MedicalTreatmentsController : ApiBaseController
 {
     private readonly IUserService _userService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public VeterinarianController(IUserService userService, IUnitOfWork unitOfWork, IMapper mapper)
+    public MedicalTreatmentsController(IUserService userService, IUnitOfWork unitOfWork, IMapper mapper)
     {
         _userService = userService;
         _unitOfWork = unitOfWork;
@@ -29,10 +29,10 @@ public class VeterinarianController : ApiBaseController
     [Authorize(Roles = "Administrator, Employee")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<IEnumerable<VeterinarianDto>>> Get()
+    public async Task<ActionResult<IEnumerable<MedicalTreatmentsDto>>> Get()
     {
-        var veterinarians = await _unitOfWork.Veterinarians.GetAllAsync();
-        return _mapper.Map<List<VeterinarianDto>>(veterinarians);
+        var medicalTreatments = await _unitOfWork.MedicalTreatments.GetAllAsync();
+        return _mapper.Map<List<MedicalTreatmentsDto>>(medicalTreatments);
     }
 
     [HttpGet]
@@ -42,36 +42,36 @@ public class VeterinarianController : ApiBaseController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<object> Get([FromQuery] Params queryParams)
     {
-        var paginatedVeterinarians = await _unitOfWork.Veterinarians.GetWithPagination(queryParams.PageIndex, queryParams.PageSize);
-        return _mapper.Map<List<VeterinarianDto>>(paginatedVeterinarians);
+        var paginated = await _unitOfWork.MedicalTreatments.GetWithPagination(queryParams.PageIndex, queryParams.PageSize);
+        return _mapper.Map<List<MedicalTreatmentsDto>>(paginated);
     }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<VeterinarianDto>> Post(VeterinarianDto veterinarianDto)
+    public async Task<ActionResult<MedicalTreatmentsDto>> Post(MedicalTreatmentsDto medicalTreatmentsDto)
     {
-        var veterinarian = _mapper.Map<Veterinarian>(veterinarianDto);
-        _unitOfWork.Veterinarians.Add(veterinarian);
+        var medicalTreatments = _mapper.Map<MedicalTreatments>(medicalTreatmentsDto);
+        _unitOfWork.MedicalTreatments.Add(medicalTreatments);
         await _unitOfWork.SaveAsync();
-        if (veterinarian == null)
+        if (medicalTreatments == null)
         {
             return BadRequest();
         }
-        return CreatedAtAction(nameof(Post),new {id = veterinarian.Id}, veterinarianDto);
+        return CreatedAtAction(nameof(Post),new {id = medicalTreatments.Id}, medicalTreatmentsDto);
     }
 
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<VeterinarianDto>> Put(int id, [FromBody] VeterinarianDto veterinarianDto)
+    public async Task<ActionResult<MedicalTreatmentsDto>> Put(int id, [FromBody] MedicalTreatmentsDto medicalTreatmentsDto)
     {
-        if (veterinarianDto == null) return NotFound();
-        var veterinarian = _mapper.Map<Veterinarian>(veterinarianDto);
-        _unitOfWork.Veterinarians.Update(veterinarian);
+        if (medicalTreatmentsDto == null) return NotFound();
+        var medicalTreatments = _mapper.Map<MedicalTreatments>(medicalTreatmentsDto);
+        _unitOfWork.MedicalTreatments.Update(medicalTreatments);
         await _unitOfWork.SaveAsync();
-        return veterinarianDto;
+        return medicalTreatmentsDto;
     }
 
     [HttpDelete("{id}")]
@@ -79,9 +79,9 @@ public class VeterinarianController : ApiBaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
     {
-        var veterinarian = await _unitOfWork.Veterinarians.GetByIdAsync(id);
-        if (veterinarian == null) return NotFound();
-        _unitOfWork.Veterinarians.Remove(veterinarian);
+        var medicalTreatments = await _unitOfWork.MedicalTreatments.GetByIdAsync(id);
+        if (medicalTreatments == null) return NotFound();
+        _unitOfWork.MedicalTreatments.Remove(medicalTreatments);
         await _unitOfWork.SaveAsync();
         return NoContent();
     }

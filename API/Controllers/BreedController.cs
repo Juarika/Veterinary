@@ -11,13 +11,13 @@ namespace API.Controllers;
 [ApiVersion("1.0")]
 [ApiVersion("1.1")]
 
-public class VeterinarianController : ApiBaseController
+public class BreedController : ApiBaseController
 {
     private readonly IUserService _userService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public VeterinarianController(IUserService userService, IUnitOfWork unitOfWork, IMapper mapper)
+    public BreedController(IUserService userService, IUnitOfWork unitOfWork, IMapper mapper)
     {
         _userService = userService;
         _unitOfWork = unitOfWork;
@@ -29,10 +29,10 @@ public class VeterinarianController : ApiBaseController
     [Authorize(Roles = "Administrator, Employee")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<IEnumerable<VeterinarianDto>>> Get()
+    public async Task<ActionResult<IEnumerable<BreedDto>>> Get()
     {
-        var veterinarians = await _unitOfWork.Veterinarians.GetAllAsync();
-        return _mapper.Map<List<VeterinarianDto>>(veterinarians);
+        var breed = await _unitOfWork.Breeds.GetAllAsync();
+        return _mapper.Map<List<BreedDto>>(breed);
     }
 
     [HttpGet]
@@ -42,36 +42,36 @@ public class VeterinarianController : ApiBaseController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<object> Get([FromQuery] Params queryParams)
     {
-        var paginatedVeterinarians = await _unitOfWork.Veterinarians.GetWithPagination(queryParams.PageIndex, queryParams.PageSize);
-        return _mapper.Map<List<VeterinarianDto>>(paginatedVeterinarians);
+        var paginated = await _unitOfWork.Breeds.GetWithPagination(queryParams.PageIndex, queryParams.PageSize);
+        return _mapper.Map<List<BreedDto>>(paginated);
     }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<VeterinarianDto>> Post(VeterinarianDto veterinarianDto)
+    public async Task<ActionResult<BreedDto>> Post(BreedDto breedDto)
     {
-        var veterinarian = _mapper.Map<Veterinarian>(veterinarianDto);
-        _unitOfWork.Veterinarians.Add(veterinarian);
+        var breed = _mapper.Map<Breed>(breedDto);
+        _unitOfWork.Breeds.Add(breed);
         await _unitOfWork.SaveAsync();
-        if (veterinarian == null)
+        if (breed == null)
         {
             return BadRequest();
         }
-        return CreatedAtAction(nameof(Post),new {id = veterinarian.Id}, veterinarianDto);
+        return CreatedAtAction(nameof(Post),new {id = breed.Id}, breedDto);
     }
 
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<VeterinarianDto>> Put(int id, [FromBody] VeterinarianDto veterinarianDto)
+    public async Task<ActionResult<BreedDto>> Put(int id, [FromBody] BreedDto breedDto)
     {
-        if (veterinarianDto == null) return NotFound();
-        var veterinarian = _mapper.Map<Veterinarian>(veterinarianDto);
-        _unitOfWork.Veterinarians.Update(veterinarian);
+        if (breedDto == null) return NotFound();
+        var breed = _mapper.Map<Breed>(breedDto);
+        _unitOfWork.Breeds.Update(breed);
         await _unitOfWork.SaveAsync();
-        return veterinarianDto;
+        return breedDto;
     }
 
     [HttpDelete("{id}")]
@@ -79,9 +79,9 @@ public class VeterinarianController : ApiBaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
     {
-        var veterinarian = await _unitOfWork.Veterinarians.GetByIdAsync(id);
-        if (veterinarian == null) return NotFound();
-        _unitOfWork.Veterinarians.Remove(veterinarian);
+        var breed = await _unitOfWork.Breeds.GetByIdAsync(id);
+        if (breed == null) return NotFound();
+        _unitOfWork.Breeds.Remove(breed);
         await _unitOfWork.SaveAsync();
         return NoContent();
     }

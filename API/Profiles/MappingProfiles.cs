@@ -13,6 +13,7 @@ public class MappingProfiles : Profile
         .ReverseMap();
 
         CreateMap<Veterinarian, VeterinarianDto>()
-        .ReverseMap();
+        .ReverseMap()
+        .ForMember(m => m.Appointments, d => d.Ignore());
     }
 }

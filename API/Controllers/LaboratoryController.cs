@@ -11,13 +11,13 @@ namespace API.Controllers;
 [ApiVersion("1.0")]
 [ApiVersion("1.1")]
 
-public class VeterinarianController : ApiBaseController
+public class LaboratoryController : ApiBaseController
 {
     private readonly IUserService _userService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public VeterinarianController(IUserService userService, IUnitOfWork unitOfWork, IMapper mapper)
+    public LaboratoryController(IUserService userService, IUnitOfWork unitOfWork, IMapper mapper)
     {
         _userService = userService;
         _unitOfWork = unitOfWork;
@@ -29,10 +29,10 @@ public class VeterinarianController : ApiBaseController
     [Authorize(Roles = "Administrator, Employee")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<IEnumerable<VeterinarianDto>>> Get()
+    public async Task<ActionResult<IEnumerable<LaboratoryDto>>> Get()
     {
-        var veterinarians = await _unitOfWork.Veterinarians.GetAllAsync();
-        return _mapper.Map<List<VeterinarianDto>>(veterinarians);
+        var laboratory = await _unitOfWork.Laboratories.GetAllAsync();
+        return _mapper.Map<List<LaboratoryDto>>(laboratory);
     }
 
     [HttpGet]
@@ -42,36 +42,36 @@ public class VeterinarianController : ApiBaseController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<object> Get([FromQuery] Params queryParams)
     {
-        var paginatedVeterinarians = await _unitOfWork.Veterinarians.GetWithPagination(queryParams.PageIndex, queryParams.PageSize);
-        return _mapper.Map<List<VeterinarianDto>>(paginatedVeterinarians);
+        var paginated = await _unitOfWork.Laboratories.GetWithPagination(queryParams.PageIndex, queryParams.PageSize);
+        return _mapper.Map<List<LaboratoryDto>>(paginated);
     }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<VeterinarianDto>> Post(VeterinarianDto veterinarianDto)
+    public async Task<ActionResult<LaboratoryDto>> Post(LaboratoryDto laboratoryDto)
     {
-        var veterinarian = _mapper.Map<Veterinarian>(veterinarianDto);
-        _unitOfWork.Veterinarians.Add(veterinarian);
+        var laboratory = _mapper.Map<Laboratory>(laboratoryDto);
+        _unitOfWork.Laboratories.Add(laboratory);
         await _unitOfWork.SaveAsync();
-        if (veterinarian == null)
+        if (laboratory == null)
         {
             return BadRequest();
         }
-        return CreatedAtAction(nameof(Post),new {id = veterinarian.Id}, veterinarianDto);
+        return CreatedAtAction(nameof(Post),new {id = laboratory.Id}, laboratoryDto);
     }
 
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<VeterinarianDto>> Put(int id, [FromBody] VeterinarianDto veterinarianDto)
+    public async Task<ActionResult<LaboratoryDto>> Put(int id, [FromBody] LaboratoryDto laboratoryDto)
     {
-        if (veterinarianDto == null) return NotFound();
-        var veterinarian = _mapper.Map<Veterinarian>(veterinarianDto);
-        _unitOfWork.Veterinarians.Update(veterinarian);
+        if (laboratoryDto == null) return NotFound();
+        var laboratory = _mapper.Map<Laboratory>(laboratoryDto);
+        _unitOfWork.Laboratories.Update(laboratory);
         await _unitOfWork.SaveAsync();
-        return veterinarianDto;
+        return laboratoryDto;
     }
 
     [HttpDelete("{id}")]
@@ -79,9 +79,9 @@ public class VeterinarianController : ApiBaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
     {
-        var veterinarian = await _unitOfWork.Veterinarians.GetByIdAsync(id);
-        if (veterinarian == null) return NotFound();
-        _unitOfWork.Veterinarians.Remove(veterinarian);
+        var laboratory = await _unitOfWork.Laboratories.GetByIdAsync(id);
+        if (laboratory == null) return NotFound();
+        _unitOfWork.Laboratories.Remove(laboratory);
         await _unitOfWork.SaveAsync();
         return NoContent();
     }
