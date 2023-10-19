@@ -43,6 +43,6 @@ public class MedicineConfiguration : IEntityTypeConfiguration<Medicine>
                     j.ToTable("MedicineSuppliers");
                     j.HasKey(t => new { t.MedicineId, t.SupplierId });
                 });
-                
+
     }
 }
