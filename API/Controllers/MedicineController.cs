@@ -85,4 +85,27 @@ public class MedicineController : ApiBaseController
         await _unitOfWork.SaveAsync();
         return NoContent();
     }
+    /* Listar los medicamentos que pertenezcan a el laboratorio Genfar */
+    [HttpGet("Laboratories")]
+    [MapToApiVersion("1.1")]
+    // [Authorize(Roles = "Administrator, Employee")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public object GetForLaboratory([FromQuery] Params queryParams)
+    {
+        var search = _unitOfWork.Medicines.Find(e => e.Laboratory.Name == queryParams.Laboratory);
+        return _mapper.Map<List<MedicineDto>>(search);
+    }
+
+    /* Listar los medicamentos que tenga un precio de venta mayor a 50000 */
+    [HttpGet("Price")]
+    [MapToApiVersion("1.1")]
+    // [Authorize(Roles = "Administrator, Employee")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public object GetForPrice([FromQuery] Params queryParams)
+    {
+        var search = _unitOfWork.Medicines.Find(e => e.Price >= queryParams.Price);
+        return _mapper.Map<List<MedicineDto>>(search);
+    }
 }

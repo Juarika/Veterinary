@@ -85,4 +85,16 @@ public class SpecieController : ApiBaseController
         await _unitOfWork.SaveAsync();
         return NoContent();
     }
+
+    /* Listar todas las mascotas agrupadas por especie. */
+    [HttpGet("Pets")]
+    [MapToApiVersion("1.0")]
+    // [Authorize(Roles = "Administrator, Employee")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<object> GetForSpecie([FromQuery] Params queryParams)
+    {
+        var paginated = await _unitOfWork.Species.GetWithPagination(queryParams.PageIndex, queryParams.PageSize);
+        return _mapper.Map<List<SpecieWithPetsDto>>(paginated);
+    }
 }

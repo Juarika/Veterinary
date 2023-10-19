@@ -26,7 +26,7 @@ public class VeterinarianController : ApiBaseController
 
     [HttpGet]
     [MapToApiVersion("1.0")]
-    [Authorize(Roles = "Administrator, Employee")]
+    // [Authorize(Roles = "Administrator, Employee")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IEnumerable<VeterinarianDto>>> Get()
@@ -40,7 +40,7 @@ public class VeterinarianController : ApiBaseController
     // [Authorize(Roles = "Administrator, Employee")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<object> Get([FromQuery] Params queryParams)
+    public async Task<object> GetQuery([FromQuery] Params queryParams)
     {
         var paginatedVeterinarians = await _unitOfWork.Veterinarians.GetWithPagination(queryParams.PageIndex, queryParams.PageSize);
         return _mapper.Map<List<VeterinarianDto>>(paginatedVeterinarians);
@@ -84,5 +84,18 @@ public class VeterinarianController : ApiBaseController
         _unitOfWork.Veterinarians.Remove(veterinarian);
         await _unitOfWork.SaveAsync();
         return NoContent();
+    }
+
+    // ENDPOINTS
+    /* Crear un consulta que permita visualizar los veterinarios cuya especialidad sea Cirujano vascular. */
+    [HttpGet("Specialty")]
+    [MapToApiVersion("1.0")]
+    // [Authorize(Roles = "Administrator, Employee")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public object GetForSpecialty([FromQuery] Params queryParams)
+    {
+        var paginatedVeterinarians = _unitOfWork.Veterinarians.Find(e => e.Specialty == queryParams.Specialty);
+        return _mapper.Map<List<VeterinarianDto>>(paginatedVeterinarians);
     }
 }

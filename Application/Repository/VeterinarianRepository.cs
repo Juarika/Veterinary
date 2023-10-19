@@ -12,4 +12,5 @@ public class VeterinarianRepository : GenericRepository<Veterinarian>, IVeterina
     {
        _context = context;
     }
+
 }

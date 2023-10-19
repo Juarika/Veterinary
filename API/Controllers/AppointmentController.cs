@@ -29,6 +29,7 @@ public class AppointmentController : ApiBaseController
     [Authorize(Roles = "Administrator, Employee")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<IEnumerable<AppointmentDto>>> Get()
     {
         var appointment = await _unitOfWork.Appointments.GetAllAsync();
@@ -84,5 +85,17 @@ public class AppointmentController : ApiBaseController
         _unitOfWork.Appointments.Remove(appointment);
         await _unitOfWork.SaveAsync();
         return NoContent();
+    }
+
+    /* Listar las mascotas que fueron atendidas por motivo de vacunacion en el primer trimestre del 2023 */
+    [HttpGet("MonthsAndMotive")]
+    [MapToApiVersion("1.0")]
+    // [Authorize(Roles = "Administrator, Employee")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public object GetForMonthsAndMotive([FromQuery] Params queryParams)
+    {
+        var search = _unitOfWork.Appointments.GetForMonthsAndMotive(queryParams.MonthInit, queryParams.MonthFinish, queryParams.Reason);
+        return _mapper.Map<List<PetOwnerDto>>(search);
     }
 }

@@ -15,3 +15,7 @@ public class PetDto
     [Required]
     public int SpecieId { get; set; }
 }
+public class PetOwnerDto
+{
+    public string Name { get; set; }
+}

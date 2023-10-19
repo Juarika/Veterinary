@@ -85,4 +85,16 @@ public class PetController : ApiBaseController
         await _unitOfWork.SaveAsync();
         return NoContent();
     }
+
+    /* Mostrar las mascotas que se encuentren registradas cuya especie sea felina. */
+    [HttpGet("Species")]
+    [MapToApiVersion("1.0")]
+    // [Authorize(Roles = "Administrator, Employee")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public object GetForSpecie([FromQuery] Params queryParams)
+    {
+        var search = _unitOfWork.Pets.Find(e => e.Specie.Name == queryParams.Specie);
+        return _mapper.Map<List<PetDto>>(search);
+    }
 }

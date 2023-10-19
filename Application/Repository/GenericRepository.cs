@@ -40,7 +40,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     }
     public virtual async Task<T> GetByIdAsync(string id)
     {
-       return await _context.Set<T>().FindAsync(id);
+        return await _context.Set<T>().FindAsync(id);
     }
     public virtual void Remove(T entity)
     {
@@ -56,15 +56,15 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
             .Update(entity);
     }
     public virtual async Task<IEnumerable<T>> GetWithPagination(int pageNumber, int pageSize)
-{
-    // Calcular el índice de inicio en base al número de página y tamaño de página.
-    int startIndex = (pageNumber - 1) * pageSize;
+    {
+        // Calcular el índice de inicio en base al número de página y tamaño de página.
+        int startIndex = (pageNumber - 1) * pageSize;
 
-    var paginatedEntities = await _context.Set<T>()
-        .Skip(startIndex)
-        .Take(pageSize)
-        .ToListAsync();
+        var paginatedEntities = await _context.Set<T>()
+            .Skip(startIndex)
+            .Take(pageSize)
+            .ToListAsync();
 
-    return paginatedEntities;
-}
+        return paginatedEntities;
+    }
 }

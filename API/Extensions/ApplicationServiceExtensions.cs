@@ -93,7 +93,7 @@ public static class ApplicationServiceExtensions
                 new QueryStringApiVersionReader("ver"),
                 new HeaderApiVersionReader("X-Version")   
             );
-            options.ReportApiVersions = true;
+            // options.ReportApiVersions = true;
         });
     }
 }

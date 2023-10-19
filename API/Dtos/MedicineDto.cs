@@ -12,4 +12,5 @@ public class MedicineDto
     public decimal Price { get; set; }
     [Required]
     public int LaboratoryId { get; set; }
+    public string Laboratory { get; set; }
 }

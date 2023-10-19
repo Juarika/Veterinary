@@ -11,3 +11,8 @@ public class OwnerDto
     [Required]
     public string Phone { get; set; }
 }
+public class OwnerWithPetsDto
+{
+    public string Name { get; set; }
+    public ICollection<PetOwnerDto> Pets { get; set; }
+}
