@@ -85,4 +85,17 @@ public class SupplierController : ApiBaseController
         await _unitOfWork.SaveAsync();
         return NoContent();
     }
+
+    /* Listar los proveedores que me venden un determinado medicamento. */
+    // [Authorize(Roles = "Administrador, Empleado")]
+    [HttpGet("GetForMedicine")]
+    [ApiVersion("1.1")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<IEnumerable<SupplierDto>>> GetForMedicine([FromQuery] Params _param)
+    {
+        var data = await _unitOfWork.Suppliers.GetForMedicine(_param.Search);
+        var search = _mapper.Map<List<SupplierDto>>(data);
+        return search;
+    }
 }

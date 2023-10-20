@@ -85,4 +85,16 @@ public class MedicineMovementController : ApiBaseController
         await _unitOfWork.SaveAsync();
         return NoContent();
     }
+
+    /* Listar todos los movimientos de medicamentos y el valor total de cada movimiento. */
+    [HttpGet("Total")]
+    [MapToApiVersion("1.1")]
+    // [Authorize(Roles = "Administrator, Employee")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<object> GetTotal([FromQuery] Params queryParams)
+    {
+        var paginated = await _unitOfWork.MedicineMovements.GetWithPagination(queryParams.PageIndex, queryParams.PageSize);
+        return _mapper.Map<List<MovMedPriceDto>>(paginated);
+    }
 }

@@ -9,3 +9,8 @@ public class BreedDto
     [Required]
     public int SpecieId { get; set; }
 }
+public class BreedWithCountDto
+{
+    public string Name { get; set; }
+    public int Quantity { get; set; }
+}

@@ -85,4 +85,15 @@ public class BreedController : ApiBaseController
         await _unitOfWork.SaveAsync();
         return NoContent();
     }
+
+    /* Listar la cantidad de mascotas que pertenecen a una raza a una raza. Nota: Se debe mostrar una lista de las razas y la cantidad de mascotas que pertenecen a la raza. */
+    [HttpGet("GetWithCount")]
+    // [Authorize(Roles = "Administrador, Empleado")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<List<BreedWithCountDto>>> GetBreedWithCount([FromQuery] Params _param){
+        var search = await _unitOfWork.Breeds.GetWithPagination(_param.PageIndex, _param.PageSize);
+        var maped = _mapper.Map<List<BreedWithCountDto>>(search);
+        return maped;
+    }
 }

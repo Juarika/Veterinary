@@ -19,3 +19,8 @@ public class PetOwnerDto
 {
     public string Name { get; set; }
 }
+public class PetWithOwnerDto
+{
+    public string Name { get; set; }
+    public OwnerForDto Owner { get; set; }
+}

@@ -16,3 +16,7 @@ public class OwnerWithPetsDto
     public string Name { get; set; }
     public ICollection<PetOwnerDto> Pets { get; set; }
 }
+public class OwnerForDto
+{
+    public string Name { get; set; }
+}

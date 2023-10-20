@@ -97,4 +97,16 @@ public class PetController : ApiBaseController
         var search = _unitOfWork.Pets.Find(e => e.Specie.Name == queryParams.Specie);
         return _mapper.Map<List<PetDto>>(search);
     }
+
+    /* Listar las mascotas y sus propietarios cuya raza sea Golden Retriver */
+    [HttpGet("Breed")]
+    [MapToApiVersion("1.1")]
+    // [Authorize(Roles = "Administrator, Employee")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<List<PetWithOwnerDto>>> GetForBreed([FromQuery] Params queryParams)
+    {
+        var search = await _unitOfWork.Pets.GetForBreed(queryParams.Search);
+        return _mapper.Map<List<PetWithOwnerDto>>(search);
+    }
 }

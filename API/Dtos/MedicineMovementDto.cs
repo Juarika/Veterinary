@@ -13,3 +13,10 @@ public class MedicineMovementDto
     [Required]
     public int MovementTypeId { get; set; }
 }
+public class MovMedPriceDto
+{
+    public int Id { get; set; }
+    public DateTime Date { get; set; }
+    public string MovementType { get; set; }
+    public double Total {get; set;}
+}

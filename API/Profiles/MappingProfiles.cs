@@ -30,12 +30,30 @@ public class MappingProfiles : Profile
         CreateMap<Owner, OwnerDto>()
         .ReverseMap();
 
+        CreateMap<Owner, OwnerForDto>()
+        .ReverseMap();
+
         CreateMap<Owner, OwnerWithPetsDto>()
         .ForMember(e => e.Pets, opt => opt.MapFrom(e => e.Pets))
         .ReverseMap();
 
+        CreateMap<Pet, PetWithOwnerDto>()
+        .ForMember(e => e.Owner, opt => opt.MapFrom(e => e.Owner))
+        .ReverseMap();
+
         CreateMap<Specie, SpecieWithPetsDto>()
         .ForMember(e => e.Pets, opt => opt.MapFrom(e => e.Pets))
+        .ReverseMap();
+
+        CreateMap<MedicineMovement, MovMedPriceDto>()
+        .ForMember(e => e.MovementType, dest => dest.MapFrom(e => e.MovementType.Description))
+        .ForMember(e => e.Total, dest => dest.MapFrom(e => e.DetailMovements.Select(e => e.Price).Sum()))
+        .ReverseMap();
+
+        CreateMap<Supplier, SupplierDto>().ReverseMap();
+
+        CreateMap<Breed, BreedWithCountDto>()
+        .ForMember(e => e.Quantity, opt => opt.MapFrom(e => e.Pets.Count))
         .ReverseMap();
     }
 }

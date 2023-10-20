@@ -98,4 +98,16 @@ public class AppointmentController : ApiBaseController
         var search = _unitOfWork.Appointments.GetForMonthsAndMotive(queryParams.MonthInit, queryParams.MonthFinish, queryParams.Reason);
         return _mapper.Map<List<PetOwnerDto>>(search);
     }
+
+    [HttpGet("Veterinarian")]
+    [MapToApiVersion("1.0")]
+    // [Authorize(Roles = "Administrator, Employee")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<IEnumerable<PetDto>>> GetPerVeterinario([FromQuery] Params _params)
+    {
+        var data = await _unitOfWork.Appointments.GetForVeterinarian(_params.Search);
+        var search = _mapper.Map<List<PetDto>>(data);
+        return search;
+    }
 }

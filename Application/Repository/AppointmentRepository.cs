@@ -23,4 +23,22 @@ public class AppointmentRepository : GenericRepository<Appointment>, IAppointmen
                                 .Select(e => e.Pet);
         return search;
     }
+
+    public async Task<IEnumerable<Pet>> GetForVeterinarian(string _name)
+    {
+        if( _name == null){
+            return await _context.Set<Appointment>()
+            .Include(e => e.Pet)
+            .Select(e => e.Pet)
+            .ToListAsync();
+        }
+        return await _context.Set<Appointment>()
+            .Include(e => e.Pet)
+            .ThenInclude(e => e.Breed)
+            .ThenInclude(e => e.Specie)
+            .Include(e => e.Veterinarian)
+            .Where(e => e.Veterinarian.Name.ToLower() == _name.ToLower())
+            .Select(e => e.Pet)
+            .ToListAsync();
+    }
 }
