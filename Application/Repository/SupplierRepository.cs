@@ -14,7 +14,7 @@ public class SupplierRepository : GenericRepository<Supplier>, ISupplier
        _context = context;
     }
 
-     public async Task<IEnumerable<Supplier>> GetForMedicine(string name)
+    public async Task<IEnumerable<Supplier>> GetForMedicine(string name)
     {
         return await _context.Set<Medicine>()
             .Where(e => e.Name.ToLower() == name.ToLower())
